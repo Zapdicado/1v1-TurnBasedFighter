@@ -9,12 +9,19 @@ let player1Stats = [];
 let player2Stats = [];
 let player1class;
 let player2class;
+let player1HP;
+let player2HP;
 let player1Selected = false;
-let playerTurn = 1;
+let currentTurn = 1;
+let battleHistory = [];
+let maxLogLength = 15;
+let fightBtn;
+let defendBtn;
+let skillBtn;
 
 function setup() {
   createCanvas(1280, 720);
-  background(255);
+  background(225);
 
   CharacterSelect();
 }
@@ -62,7 +69,8 @@ function CharacterSelect() {
       player1class = "mage";
       player1Selected = true;
       karakter1ValgTekst.html("Spiller 2 vælg en karakter")
-    } else {
+      player1HP = player1Stats[0]
+    } else if(player1Selected == true) {
       player2Stats = mageStats;
       player2class = "mage";
       fighterIMG.hide();
@@ -70,7 +78,8 @@ function CharacterSelect() {
       rogueTekst.hide();
       fighterTekst.hide();
       karakter1ValgTekst.hide();
-      battle();
+      player2HP = player2Stats[0]
+      BattleLoad();
     }
   })
 
@@ -84,7 +93,8 @@ function CharacterSelect() {
       player1class = "fighter";
       player1Selected = true;
       karakter1ValgTekst.html("Spiller 2 vælg en karakter")
-    } else {
+      player1HP = player1Stats[0]
+    } else if(player1Selected == true) {
       player2Stats = fighterStats;
       player2class = "fighter";
       rogueIMG.hide();
@@ -92,8 +102,9 @@ function CharacterSelect() {
       rogueTekst.hide();
       mageTekst.hide();
       karakter1ValgTekst.hide();
-      battle();
-    }
+      player2HP = player2Stats[0]
+      BattleLoad();
+    } 
   })
 
   rogueIMG.mouseClicked(() => {
@@ -106,7 +117,8 @@ function CharacterSelect() {
       player1class = "rogue";
       player1Selected = true;
       karakter1ValgTekst.html("Spiller 2 vælg en karakter")
-    } else {
+      player1HP = player1Stats[0]
+    } else if(player1Selected == true) {
       player2Stats = rogueStats;
       player2class = "rogue";
       mageIMG.hide();
@@ -114,52 +126,98 @@ function CharacterSelect() {
       mageTekst.hide();
       karakter1ValgTekst.hide();
       fighterTekst.hide();
-      battle();
+      player2HP = player2Stats[0]
+      BattleLoad();
     }
   })
 }
 
-//Funktion hvor selve kampen sker
-function battle() {
-  let player1HP = player1Stats[0]
-  let player2HP = player2Stats[0]
+//Funktion hvor alle elementer (billeder, tekst og knapper) bliver indlæst
+function BattleLoad() {
+  background(225);
 
   switch (player1class) {
     case "mage":
       mageIMG.show();
-      mageIMG.position(100, 200);
+      mageIMG.position(100, 125);
       break;
     case "fighter":
       fighterIMG.show();
-      fighterIMG.position(100, 200);
+      fighterIMG.position(100, 125);
       break;
     case "rogue":
       rogueIMG.show();
-      rogueIMG.position(100, 200);
+      rogueIMG.position(100, 125);
   }
 
   switch (player2class) {
     case "mage":
       mageIMG.show();
-      mageIMG.position(850, 200);
+      mageIMG.position(850, 125);
       break;
     case "fighter":
       fighterIMG.show();
-      fighterIMG.position(850, 200);
+      fighterIMG.position(850, 125);
       break;
     case "rogue":
       rogueIMG.show();
-      rogueIMG.position(850, 200);
+      rogueIMG.position(850, 125);
   }
 
-  let displayHP1 = createP(player1HP + "/" + player1Stats[0])
-  let displayHP2 = createP(player2HP + "/" + player2Stats[0])
+  let displayHP1 = createP("HP: " + player1HP + "/" + player1Stats[0])
+  let displayHP2 = createP("HP: " + player2HP + "/" + player2Stats[0])
+  let battleLogHeader = createP("Battle Log:")
 
   displayHP1.style("font-size", "35px")
   displayHP2.style("font-size", "35px")
+  battleLogHeader.style("font-size", "50px")
 
-  displayHP1.position(180, 100)
-  displayHP2.position(930, 100)
+  displayHP1.position(180, 25)
+  displayHP2.position(930, 25)
+  battleLogHeader.position(520,20)
+
+  fightBtn = createButton("Angrib")
+  defendBtn = createButton("Forsvar")
+  skillBtn = createButton("Skill")
+
+  fightBtn.size(150,50)
+  defendBtn.size(150,50)
+  skillBtn.size(150,50)
+
+  fightBtn.position(100,550)
+  defendBtn.position(255,550)
+  skillBtn.position(100,605)
+
+  console.log(player1Selected)
+
+  playerTurn(currentTurn);
+}
+
+function playerTurn(turn) {
+  console.log(turn)
+  BattleLog("Det er spiller "+turn+"'s tur")
+
+}
+
+function BattleLog(logInput) {
+  noStroke();
+  fill(225)
+  rect(450,125,370,600)
+
+  fill(0);
+  battleHistory.push(logInput);
+
+  if (battleHistory.length > maxLogLength) {
+    battleHistory.shift();
+  }
+
+  textSize(20)
+  textAlign(LEFT)
+
+  for (i = 0; i < battleHistory.length; i++) {
+  text(battleHistory[i],450,150 + i*30);
+  }
+
 }
 
 function draw() {
