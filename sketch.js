@@ -1,6 +1,6 @@
-let fighterStats = [100, 8, 12, 1]
-let mageStats = [80, 5, 8, 7]
-let rogueStats = [85, 11, 5, 13]
+let fighterStats = [100, 8, 12]
+let mageStats = [90, 5, 8]
+let rogueStats = [85, 11, 5]
 let mageIMG;
 let fighterIMG;
 let rogueIMG;
@@ -215,6 +215,7 @@ function BattleLoad() {
   playerTurn(currentTurn);
 }
 
+// Funktionen der styre selve kampen, når funktionen køres indsættes inputtet "turn" som bestemmer om det er spiller 1 eller 2's tur
 function playerTurn(turn) {
 
   BattleLog("Det er spiller "+turn+"'s tur")
@@ -356,7 +357,7 @@ function playerTurn(turn) {
           playerTurn(currentTurn);
           break;
         case "fighter":
-          let damage2 = round(random(13,19));
+          let damage2 = round(random(13,19)*vanish2);
           player2HP -= damage2;
           displayHP2.html("HP: " + player2HP + "/" + player2Stats[0]);
           BattleLog("Spiller "+ turn +" angreb hensynløst og gjorde "+ damage2 + " skade")
@@ -381,7 +382,7 @@ function playerTurn(turn) {
           playerTurn(currentTurn);
           break;
         case "fighter":
-          let damage2 = round(random(13,19));
+          let damage2 = round(random(13,19)*vanish1);
           player1HP -= damage2;
           displayHP1.html("HP: " + player1HP + "/" + player1Stats[0]);
           BattleLog("Spiller "+ turn +" angreb hensynløst og gjorde "+ damage2 + " skade")
@@ -519,6 +520,7 @@ function playerTurn(turn) {
 
 }
 
+//Funktion som styre Battle Loggen, inputtet sættes i et array som vises som en række tekst elementer
 function BattleLog(logInput) {
   noStroke();
   fill(255)
