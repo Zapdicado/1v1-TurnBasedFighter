@@ -1,9 +1,10 @@
-let fighterStats = [120, 9, 12, 1]
+let fighterStats = [100, 8, 12, 1]
 let mageStats = [80, 5, 8, 7]
-let rogueStats = [80, 13, 5, 13]
+let rogueStats = [85, 11, 5, 13]
 let mageIMG;
 let fighterIMG;
 let rogueIMG;
+let battleLogHeader;
 
 let player1Stats = [];
 let player2Stats = [];
@@ -19,12 +20,15 @@ let fightBtn;
 let defendBtn;
 let skillBtn;
 let backBtn;
+let restartBtn;
 let skill1Btn;
 let skill2Btn;
 let displayHP1;
 let displayHP2;
 let usedDefend1 = false;
 let usedDefend2 = false;
+let vanish1 = 1;
+let vanish2 = 1;
 
 function setup() {
   createCanvas(1280, 720);
@@ -172,7 +176,7 @@ function BattleLoad() {
 
   displayHP1 = createP("HP: " + player1HP + "/" + player1Stats[0])
   displayHP2 = createP("HP: " + player2HP + "/" + player2Stats[0])
-  let battleLogHeader = createP("Battle Log:")
+  battleLogHeader = createP("Battle Log:")
 
   displayHP1.style("font-size", "35px")
   displayHP2.style("font-size", "35px")
@@ -188,7 +192,11 @@ function BattleLoad() {
   backBtn = createButton("Tilbage")
   skill1Btn = createButton("")
   skill2Btn = createButton("")
+  restartBtn = createButton("Genstart Spil")
+  restartBtn.size(250,100)
+  restartBtn.position(500,630)
 
+  restartBtn.hide();
   backBtn.hide();
   skill1Btn.hide();
   skill2Btn.hide();
@@ -208,12 +216,9 @@ function BattleLoad() {
 }
 
 function playerTurn(turn) {
-  console.log(1)
+
   BattleLog("Det er spiller "+turn+"'s tur")
 
-  console.log(player1Stats[2])
-  console.log(player2Stats[2])
-  
   if (turn == 1) {
     if (usedDefend1 == true) {
       player1Stats[2] = player1Stats[2]/2
@@ -238,17 +243,25 @@ function playerTurn(turn) {
 
   fightBtn.mouseClicked(() => {
     if (turn == 1) {
-      let damage = round((player1Stats[1]/player2Stats[2])*10*random(0.8,1.2));
+      let damage = round((player1Stats[1]/player2Stats[2])*10*random(0.8,1.2)*vanish2);
       player2HP -= damage;
       displayHP2.html("HP: " + player2HP + "/" + player2Stats[0]);
       BattleLog("Spiller "+ turn +" angreb og gjorde "+ damage + " skade")
+      if (vanish1 == 0) {
+        player1Stats[1] = player1Stats[1]/2
+        vanish1 = 1;
+      }
       currentTurn = 2;
       playerTurn(currentTurn);
     } else if (turn == 2) {
-      let damage = round((player2Stats[1]/player1Stats[2])*10*random(0.8,1.2));
+      let damage = round((player2Stats[1]/player1Stats[2])*10*random(0.8,1.2)*vanish1);
       player1HP -= damage;
       displayHP1.html("HP: " + player1HP + "/" + player1Stats[0]);
       BattleLog("Spiller "+ turn +" angreb og gjorde "+ damage + " skade")
+      if (vanish2 == 0) {
+        player2Stats[1] = player2Stats[1]/2
+        vanish2 = 1;
+      }
       currentTurn = 1;
       playerTurn(currentTurn);
     }
@@ -283,11 +296,42 @@ function playerTurn(turn) {
        backBtn.position(175,605)
        skill1Btn.position(100,550)
        skill2Btn.position(255,550)
+
+       switch (player1class) {
+        case "mage":
+          skill1Btn.html("Tordennedslag");
+          skill2Btn.html("Helbredende Magi");
+          break;
+        case "fighter":
+          skill1Btn.html("Dumdristig Manøvre");
+          skill2Btn.html("Mere Rustning");
+          break;
+        case "rogue":
+          skill1Btn.html("Slib klingen");
+          skill2Btn.html("Røgbombe");
+      }
+
     } else if (turn == 2) {
        backBtn.position(925,605)
        skill1Btn.position(850,550)
        skill2Btn.position(1005,550)
+
+       switch (player2class) {
+        case "mage":
+          skill1Btn.html("Tordennedslag");
+          skill2Btn.html("Helbredende Magi");
+          break;
+        case "fighter":
+          skill1Btn.html("Dumdristig Manøvre");
+          skill2Btn.html("Mere Rustning");
+          break;
+        case "rogue":
+          skill1Btn.html("Slib klingen");
+          skill2Btn.html("Røgbombe");
+      }
+
     }
+
   })
 
   backBtn.mouseClicked(() => {
@@ -298,6 +342,180 @@ function playerTurn(turn) {
     skill1Btn.hide();
     skill2Btn.hide();
   })
+
+  skill1Btn.mouseClicked(() => {
+
+    if (turn == 1) {
+      switch (player1class) {
+        case "mage":
+          let damage = round(random(10,20));
+          player2HP -= damage;
+          displayHP2.html("HP: " + player2HP + "/" + player2Stats[0]);
+          BattleLog("Spiller "+ turn +" brugte lynmagi gjorde "+ damage + " skade")
+          currentTurn = 2;
+          playerTurn(currentTurn);
+          break;
+        case "fighter":
+          let damage2 = round(random(13,19));
+          player2HP -= damage2;
+          displayHP2.html("HP: " + player2HP + "/" + player2Stats[0]);
+          BattleLog("Spiller "+ turn +" angreb hensynløst og gjorde "+ damage2 + " skade")
+          player1Stats[2] -= 1;
+          currentTurn = 2;
+          playerTurn(currentTurn);
+          break;
+        case "rogue":
+          player1Stats[1] += 2;
+          BattleLog("Spiller " + turn + " gjorde sin klinge skarpere")
+          currentTurn = 2;
+          playerTurn(currentTurn);
+      }
+    } else if (turn == 2) {
+      switch (player2class) {
+        case "mage":
+          let damage = round(random(10,20));
+          player1HP -= damage;
+          displayHP1.html("HP: " + player1HP + "/" + player1Stats[0]);
+          BattleLog("Spiller "+ turn +" brugte lynmagi og gjorde "+ damage + " skade")
+          currentTurn = 1;
+          playerTurn(currentTurn);
+          break;
+        case "fighter":
+          let damage2 = round(random(13,19));
+          player1HP -= damage2;
+          displayHP1.html("HP: " + player1HP + "/" + player1Stats[0]);
+          BattleLog("Spiller "+ turn +" angreb hensynløst og gjorde "+ damage2 + " skade")
+          player2Stats[2] -= 1;
+          currentTurn = 1;
+          playerTurn(currentTurn);
+          break;
+        case "rogue":
+          player2Stats[1] += 2;
+          BattleLog("Spiller " + turn + " gjorde sin klinge skarpere")
+          currentTurn = 1;
+          playerTurn(currentTurn);
+      }
+    }
+
+    if (player1HP > 0 && player2HP > 0) {
+      fightBtn.show();
+      defendBtn.show();
+      skillBtn.show();
+      backBtn.hide();
+      skill1Btn.hide();
+      skill2Btn.hide();
+    }
+  })
+
+  skill2Btn.mouseClicked(() => {
+
+    if (turn == 1) {
+      switch (player1class) {
+        case "mage":
+          let healing = round(random(10,17));
+          player1HP += healing;
+          if (player1HP > 80) {
+            player1HP = 80;
+          }
+          displayHP1.html("HP: " + player1HP + "/" + player1Stats[0]);
+          BattleLog("Spiller "+ turn +" brugte helbredning og fik "+ healing + " HP")
+          currentTurn = 2;
+          playerTurn(currentTurn);
+          break;
+        case "fighter":
+          player1Stats[2] += 2;
+          BattleLog("Spiller " + turn + " tog mere rustning på")
+          currentTurn = 2;
+          playerTurn(currentTurn);
+          break;
+        case "rogue":
+          console.log(vanish1)
+          if (vanish1 == 1) {
+            player1Stats[1] = player1Stats[1]*2
+          }
+          vanish1 = 0;
+          BattleLog("Spiller "+ turn +" gemmer sig i skyggerne...")
+          currentTurn = 2;
+          playerTurn(currentTurn)
+      }
+    } else if (turn == 2) {
+      switch (player2class) {
+        case "mage":
+          let healing = round(random(10,17));
+          player2HP += healing;
+          if (player2HP > 80) {
+            player2HP = 80;
+          }
+          displayHP2.html("HP: " + player2HP + "/" + player2Stats[0]);
+          BattleLog("Spiller "+ turn +" brugte helbredning og fik "+ healing + " HP")
+          currentTurn = 1;
+          playerTurn(currentTurn);
+          break;
+        case "fighter":
+          player2Stats[2] += 2;
+          BattleLog("Spiller " + turn + " tog mere rustning på")
+          currentTurn = 1;
+          playerTurn(currentTurn);
+          break;
+        case "rogue":
+          if (vanish2 == 1) {
+            player2Stats[1] = player2Stats[1]*2
+          }
+          vanish2 = 0;
+          BattleLog("Spiller "+ turn +" gemmer sig i skyggerne...")
+          currentTurn = 1;
+          playerTurn(currentTurn)
+      }
+    }
+
+    if (player1HP > 0 && player2HP > 0) {
+      fightBtn.show();
+      defendBtn.show();
+      skillBtn.show();
+      backBtn.hide();
+      skill1Btn.hide();
+      skill2Btn.hide();
+    }
+  })
+
+  if (player1HP <= 0 || player2HP <= 0) {
+    if(currentTurn == 1) {
+      BattleLog("Spiller 2 vandt")
+    } else if (currentTurn == 2) {
+      BattleLog("Spiller 1 vandt")
+    }
+
+    fightBtn.hide();
+    defendBtn.hide();
+    skillBtn.hide();
+    backBtn.hide();
+    skill1Btn.hide();
+    skill2Btn.hide();
+
+    restartBtn.show();
+  }
+
+  restartBtn.mouseClicked(() => {
+    mageIMG.hide();
+    fighterIMG.hide();
+    rogueIMG.hide();
+    battleLogHeader.hide();
+    battleHistory = [];
+    fill(255)
+    rect(450,125,400,600)
+    displayHP1.hide();
+    displayHP2.hide();
+    restartBtn.hide();
+    player1HP = 0;
+    player2HP = 0;
+    player1Stats = [];
+    player2Stats = [];
+    player1Selected = false;  
+    currentTurn = 1;
+
+    CharacterSelect();
+  })
+
 
 }
 
@@ -313,11 +531,11 @@ function BattleLog(logInput) {
     battleHistory.shift();
   }
 
-  textSize(20)
+  textSize(17)
   textAlign(LEFT)
 
   for (i = 0; i < battleHistory.length; i++) {
-  text(battleHistory[i],450,150 + i*30);
+      text(battleHistory[i],450,150 + i*30, 400);
   }
 
 }
