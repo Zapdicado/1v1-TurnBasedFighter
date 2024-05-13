@@ -4,6 +4,9 @@ let rogueStats = [85, 11, 5]
 let mageIMG;
 let fighterIMG;
 let rogueIMG;
+let mageIMG2;
+let fighterIMG2;
+let rogueIMG2;
 let battleLogHeader;
 
 let player1Stats = [];
@@ -61,6 +64,14 @@ function CharacterSelect() {
   mageIMG = createImg("mageArt.png", "mage")
   fighterIMG = createImg("fighterArt.png", "fighter")
   rogueIMG = createImg("rogueArt.png", "rougue")
+
+  mageIMG2 = createP("TEST")
+  fighterIMG2 = createP("TEST")
+  rogueIMG2 = createP("TEST")
+
+  mageIMG2.hide();
+  fighterIMG2.hide();
+  rogueIMG2.hide();
 
   mageIMG.size(300, 400)
   fighterIMG.size(300, 400)
@@ -148,30 +159,42 @@ function BattleLoad() {
 
   switch (player1class) {
     case "mage":
-      mageIMG.show();
-      mageIMG.position(100, 125);
+      mageIMG2 = createImg("mageArt.png", "mage")
+      mageIMG2.size(300, 400)
+    
+      mageIMG2.position(100, 125);
       break;
     case "fighter":
-      fighterIMG.show();
-      fighterIMG.position(100, 125);
+      fighterIMG2 = createImg("fighterArt.png", "fighter")
+      fighterIMG2.size(300, 400)
+
+      fighterIMG2.position(100, 125);
       break;
     case "rogue":
-      rogueIMG.show();
-      rogueIMG.position(100, 125);
+      rogueIMG2 = createImg("rogueArt.png", "rougue")
+      rogueIMG2.size(300, 400)
+
+      rogueIMG2.position(100, 125);
   }
 
   switch (player2class) {
     case "mage":
-      mageIMG.show();
-      mageIMG.position(850, 125);
+      mageIMG2 = createImg("mageArt.png", "mage")
+      mageIMG2.size(300, 400)  
+
+      mageIMG2.position(850, 125);
       break;
     case "fighter":
-      fighterIMG.show();
-      fighterIMG.position(850, 125);
+      fighterIMG2 = createImg("fighterArt.png", "fighter")
+      fighterIMG2.size(300, 400)  
+
+      fighterIMG2.position(850, 125);
       break;
     case "rogue":
-      rogueIMG.show();
-      rogueIMG.position(850, 125);
+      rogueIMG2 = createImg("rogueArt.png", "rougue")
+      rogueIMG2.size(300, 400)  
+
+      rogueIMG2.position(850, 125);
   }
 
   displayHP1 = createP("HP: " + player1HP + "/" + player1Stats[0])
@@ -415,8 +438,8 @@ function playerTurn(turn) {
         case "mage":
           let healing = round(random(10,17));
           player1HP += healing;
-          if (player1HP > 80) {
-            player1HP = 80;
+          if (player1HP > 90) {
+            player1HP = 90;
           }
           displayHP1.html("HP: " + player1HP + "/" + player1Stats[0]);
           BattleLog("Spiller "+ turn +" brugte helbredning og fik "+ healing + " HP")
@@ -444,8 +467,8 @@ function playerTurn(turn) {
         case "mage":
           let healing = round(random(10,17));
           player2HP += healing;
-          if (player2HP > 80) {
-            player2HP = 80;
+          if (player2HP > 90) {
+            player2HP = 90;
           }
           displayHP2.html("HP: " + player2HP + "/" + player2Stats[0]);
           BattleLog("Spiller "+ turn +" brugte helbredning og fik "+ healing + " HP")
@@ -497,9 +520,9 @@ function playerTurn(turn) {
   }
 
   restartBtn.mouseClicked(() => {
-    mageIMG.hide();
-    fighterIMG.hide();
-    rogueIMG.hide();
+    mageIMG2.hide();
+    fighterIMG2.hide();
+    rogueIMG2.hide();
     battleLogHeader.hide();
     battleHistory = [];
     fill(255)
